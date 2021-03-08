@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_08_151331) do
+ActiveRecord::Schema.define(version: 2021_03_08_155513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "album_songs", force: :cascade do |t|
+    t.bigint "album_id", null: false
+    t.bigint "song_id", null: false
+    t.integer "track_number"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["album_id"], name: "index_album_songs_on_album_id"
+    t.index ["song_id"], name: "index_album_songs_on_song_id"
+  end
 
   create_table "albums", force: :cascade do |t|
     t.bigint "artist_id", null: false
@@ -73,15 +83,6 @@ ActiveRecord::Schema.define(version: 2021_03_08_151331) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tracklists", force: :cascade do |t|
-    t.bigint "album_id", null: false
-    t.bigint "song_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["album_id"], name: "index_tracklists_on_album_id"
-    t.index ["song_id"], name: "index_tracklists_on_song_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -94,6 +95,8 @@ ActiveRecord::Schema.define(version: 2021_03_08_151331) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "album_songs", "albums"
+  add_foreign_key "album_songs", "songs"
   add_foreign_key "albums", "artists"
   add_foreign_key "collaborations", "artists"
   add_foreign_key "collaborations", "songs"
@@ -101,6 +104,4 @@ ActiveRecord::Schema.define(version: 2021_03_08_151331) do
   add_foreign_key "libraries", "users"
   add_foreign_key "outlists", "songs"
   add_foreign_key "outlists", "users"
-  add_foreign_key "tracklists", "albums"
-  add_foreign_key "tracklists", "songs"
 end
