@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   has_one :outlist
   has_many :songs, through: :outlists
-  has_many :libraries
+  has_many :userArtists
 
   # validates :username, presence: true
 end

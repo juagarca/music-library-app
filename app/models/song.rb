@@ -1,5 +1,5 @@
 class Song < ApplicationRecord
-  has_many :albumsongs
+  has_many :albumSongs
   has_many :outlists
   has_many :collaborations
 

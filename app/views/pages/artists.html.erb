@@ -1,7 +1,0 @@
-<% if current_user.outlist %>
-  <% current_user.outlist.each do |song| %>
-    <%= song.title %>
-  <% end %>
-<% else %>
-  <p>Nothing here yet!</p>
-<% end %>
