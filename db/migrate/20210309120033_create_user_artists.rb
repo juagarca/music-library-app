@@ -1,6 +1,6 @@
-class CreateLibraries < ActiveRecord::Migration[6.0]
+class CreateUserArtists < ActiveRecord::Migration[6.0]
   def change
-    create_table :libraries do |t|
+    create_table :user_artists do |t|
       t.references :artist, null: false, foreign_key: true
       t.references :user, null: false, foreign_key: true
 
