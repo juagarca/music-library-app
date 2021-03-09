@@ -8,4 +8,8 @@ class User < ApplicationRecord
   has_many :artists, through: :userArtists
 
   # validates :username, presence: true
+
+  def find_artist(artist)
+    self.artists.find { |a| artist == a }
+  end
 end
