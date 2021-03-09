@@ -18,6 +18,7 @@ Album.destroy_all
 lane = Album.create!(title: '200km/h In The Wrong Lane', artist: tatu, release_date: Date.new(2001))
 exit_album = Album.create!(title: 'Exit', artist: darin, release_date: Date.new(2002))
 poster = Album.create!(title: 'Poster Girl', artist: zara, release_date: Date.new(2021))
+
 # Songs
 Song.destroy_all
 all = Song.create!(title: 'All The Things She Said', length: 80)

@@ -1,11 +1,13 @@
 <ul>
   <% @artists.each do |artist| %>
     <li>
-      <%= link_to artist.name, artist_path(artist) %> -->
-      <% if current_user.find_artist(artist)%>
-        <%= link_to "Remove", artist_add_path(artist), class: "btn btn-danger" %>
-      <% else %>
-        <%= link_to "Add", artist_add_path(artist), class: "btn btn-primary" %>
+      <%= link_to artist.name, artist_path(artist) %>
+      <% if current_user %>
+        <% if current_user.find_artist(artist)%>
+          <%= link_to "Remove", artist_add_path(artist), class: "btn btn-danger" %>
+        <% else %>
+          <%= link_to "Add", artist_add_path(artist), class: "btn btn-primary" %>
+        <% end %>
       <% end %>
     </li>
     <br>

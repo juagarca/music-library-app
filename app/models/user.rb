@@ -10,6 +10,6 @@ class User < ApplicationRecord
   # validates :username, presence: true
 
   def find_artist(artist)
-    self.artists.find { |a| artist == a }
+    artists.find { |a| artist == a }
   end
 end
