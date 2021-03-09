@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   resources :artists, only: %i[index show] do
     resources :albums, only: %i[show]
   end
+
+  get '/dashboard', to: 'dashboards#user'
 end

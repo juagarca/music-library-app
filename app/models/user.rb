@@ -4,9 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_one :outlist
-  has_many :songs, through: :outlists
   has_many :userArtists
+  has_many :artists, through: :userArtists
 
   # validates :username, presence: true
 end
