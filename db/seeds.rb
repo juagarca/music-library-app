@@ -40,5 +40,6 @@ User.create!(email: 'test@email.com', password: '123456')
 UserArtist.destroy_all
 UserArtist.create!(artist: tatu, user: User.first)
 UserArtist.create!(artist: darin, user: User.first)
+UserArtist.create!(artist: zara, user: User.first)
 
 p 'Finished'

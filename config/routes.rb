@@ -5,5 +5,5 @@ Rails.application.routes.draw do
     resources :albums, only: %i[show]
   end
 
-  get '/dashboard', to: 'dashboards#user'
+  get '/dashboard', to: 'pages#dashboard'
 end

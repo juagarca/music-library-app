@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  def artists
-    @artists = Artist.all
+  def dashboard
+    @artists = current_user.artists
   end
 end
