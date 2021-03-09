@@ -1,13 +1,11 @@
 <h2><%= @artist.name %></h2>
 
+<h3>------ Albums ------</h2>
 
-<h3>Albums</h2>
-
-------------
 <ul>
   <% @artist.albums.each do |album| %>
     <li>
-      <%= album.title %>
+      <%= link_to album.title, artist_album_path(@artist, album) %>
     </li>
   <% end %>
 </ul>

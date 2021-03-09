@@ -1,0 +1,10 @@
+<h2><%= @album.title %></h2>
+
+<ul>
+  <% @songs.each do |song| %>
+    <li>
+      <%= song.albumSongs.where(album: @album).first.track_number %> -
+      <%= song.title %>
+    </li>
+  <% end %>
+</ul>

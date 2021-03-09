@@ -11,22 +11,26 @@ p 'Starting'
 Artist.destroy_all
 tatu = Artist.create!(name: 'tATu')
 darin = Artist.create!(name: 'Darin')
-Artist.create!(name: 'Zara Larsson')
+zara = Artist.create!(name: 'Zara Larsson')
 
 # Album
 Album.destroy_all
 lane = Album.create!(title: '200km/h In The Wrong Lane', artist: tatu, release_date: Date.new(2001))
 exit_album = Album.create!(title: 'Exit', artist: darin, release_date: Date.new(2002))
-
+poster = Album.create!(title: 'Poster Girl', artist: zara, release_date: Date.new(2021))
 # Songs
 Song.destroy_all
-all = Song.create!(title: "All The Things She Said", length: 80)
-playing = Song.create!(title: "Playing With Fire", length: 100)
+all = Song.create!(title: 'All The Things She Said', length: 80)
+playing = Song.create!(title: 'Playing With Fire', length: 100)
+love = Song.create!(title: 'I Need Love', length: 182)
+fff = Song.create!(title: 'FFF', length: 213)
 
 # AlbumSongs
 AlbumSong.destroy_all
 AlbumSong.create!(album: lane, song: all, track_number: 2)
 AlbumSong.create!(album: exit_album, song: playing, track_number: 1)
+AlbumSong.create!(album: poster, song: love, track_number: 7)
+AlbumSong.create!(album: poster, song: fff, track_number: 11)
 
 # Users
 User.destroy_all
