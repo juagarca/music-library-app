@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :userArtists
+  has_many :userAlbums
   has_many :artists, through: :userArtists
 
   # validates :username, presence: true

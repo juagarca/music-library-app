@@ -14,9 +14,25 @@ class ArtistsController < ApplicationController
     picked = UserArtist.find_by(artist: @artist)
     if picked
       picked.destroy
+      delete_albums_from_user_dashboard(@artist)
     else
-      UserArtist.create!(user: current_user, artist: @artist)
+      UserArtist.create(user: current_user, artist: @artist)
+      add_albums_to_user_dashboard(@artist)
     end
     redirect_to artists_path
+  end
+
+  private
+
+  def delete_albums_from_user_dashboard(artist)
+    artist.albums.each do |album|
+      UserAlbum.where(album_id: album.id).destroy_all
+    end
+  end
+
+  def add_albums_to_user_dashboard(artist)
+    artist.albums.each do |album|
+      UserAlbum.create(user: current_user, album: album)
+    end
   end
 end
