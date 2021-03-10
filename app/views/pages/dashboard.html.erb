@@ -1,6 +1,16 @@
 <%= current_user.first_name %>
-<ul>
-  <% @artists.each do |artist| %>
-    <li> <%= artist.name %> </li>
-  <% end %>
-</ul>
+
+<h2>What's out today</h2>
+  <ul>
+      <% @albums_to_listen.each do |album| %>
+        <li> <%= link_to album.title, artist_album_path(album.artist, album) %> by <%= album.artist.name %> </li>
+      <% end %>
+  </ul>
+
+
+<h2>Your artists</h2>
+<% @artists.each do |artist| %>
+  <ul>
+      <li> <%= link_to artist.name, artist_path(artist) %> </li>
+  </ul>
+<% end %>
