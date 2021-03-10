@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_09_120033) do
+ActiveRecord::Schema.define(version: 2021_03_10_123835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,16 +56,6 @@ ActiveRecord::Schema.define(version: 2021_03_09_120033) do
     t.index ["song_id"], name: "index_collaborations_on_song_id"
   end
 
-  create_table "outlists", force: :cascade do |t|
-    t.bigint "song_id", null: false
-    t.bigint "user_id", null: false
-    t.boolean "played", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["song_id"], name: "index_outlists_on_song_id"
-    t.index ["user_id"], name: "index_outlists_on_user_id"
-  end
-
   create_table "songs", force: :cascade do |t|
     t.boolean "single"
     t.string "video_url"
@@ -74,6 +64,16 @@ ActiveRecord::Schema.define(version: 2021_03_09_120033) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "title"
+  end
+
+  create_table "user_albums", force: :cascade do |t|
+    t.bigint "album_id", null: false
+    t.bigint "user_id", null: false
+    t.boolean "played"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["album_id"], name: "index_user_albums_on_album_id"
+    t.index ["user_id"], name: "index_user_albums_on_user_id"
   end
 
   create_table "user_artists", force: :cascade do |t|
@@ -109,8 +109,8 @@ ActiveRecord::Schema.define(version: 2021_03_09_120033) do
   add_foreign_key "albums", "artists"
   add_foreign_key "collaborations", "artists"
   add_foreign_key "collaborations", "songs"
-  add_foreign_key "outlists", "songs"
-  add_foreign_key "outlists", "users"
+  add_foreign_key "user_albums", "albums"
+  add_foreign_key "user_albums", "users"
   add_foreign_key "user_artists", "artists"
   add_foreign_key "user_artists", "users"
 end
