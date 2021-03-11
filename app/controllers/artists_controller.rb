@@ -10,14 +10,14 @@ class ArtistsController < ApplicationController
   end
 
   def add
-    @artist = Artist.find(params[:artist_id])
-    picked = UserArtist.find_by(artist: @artist)
+    artist = Artist.find(params[:artist_id])
+    picked = UserArtist.where(artist: artist, user: current_user).first
     if picked
       picked.destroy
-      delete_albums_from_user_dashboard(@artist)
+      delete_albums_from_user_dashboard(artist)
     else
-      UserArtist.create(user: current_user, artist: @artist)
-      add_albums_to_user_dashboard(@artist)
+      UserArtist.create(user: current_user, artist: artist)
+      add_albums_to_user_dashboard(artist)
     end
     redirect_to artists_path
   end
@@ -26,7 +26,7 @@ class ArtistsController < ApplicationController
 
   def delete_albums_from_user_dashboard(artist)
     artist.albums.each do |album|
-      UserAlbum.where(album_id: album.id).destroy_all
+      UserAlbum.where(album_id: album.id, user: current_user).destroy_all
     end
   end
 

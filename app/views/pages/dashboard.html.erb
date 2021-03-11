@@ -3,7 +3,7 @@
 <h2>Your playlist</h2>
   <ul>
       <% @albums_to_listen.each do |album| %>
-        <li data-album=<%= album.id %>>
+        <li>
           <%= link_to album.title, artist_album_path(album.artist, album) %> by <%= album.artist.name %>
           <%= link_to "✅", tick_path(album) %>
         </li>

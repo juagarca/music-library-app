@@ -36,6 +36,7 @@ AlbumSong.create!(album: poster, song: fff, track_number: 11)
 # Users
 User.destroy_all
 User.create!(email: 'test@email.com', password: '123456')
+User.create!(email: 'test@email2.com', password: '123456')
 
 # UserArtists
 # UserArtist.destroy_all

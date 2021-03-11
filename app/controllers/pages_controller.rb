@@ -10,7 +10,7 @@ class PagesController < ApplicationController
   end
 
   def tick
-    record = UserAlbum.where(album: params[:id])
+    record = UserAlbum.where(album: params[:id], user: current_user)
     record.update(played: true)
     redirect_to :dashboard
   end
