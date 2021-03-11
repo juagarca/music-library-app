@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   resources :artists, only: %i[index show] do
     get '/add', to: 'artists#add'
-    resources :albums, only: %i[show]
+    resources :albums, only: %i[show] do
+      resources :songs, only: %i[show]
+    end
   end
 end

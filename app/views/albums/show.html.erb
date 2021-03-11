@@ -4,7 +4,7 @@
   <% @songs.each do |song| %>
     <li>
       <%= song.albumSongs.where(album: @album).first.track_number %> -
-      <%= song.title %>
+      <%= link_to song.title, artist_album_song_path(@artist, @album, song) %>
     </li>
   <% end %>
 </ul>
