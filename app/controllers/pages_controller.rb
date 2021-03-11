@@ -1,3 +1,5 @@
+
+
 class PagesController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[home]
 
@@ -13,6 +15,19 @@ class PagesController < ApplicationController
     record = UserAlbum.where(album: params[:id], user: current_user)
     record.update(played: true)
     redirect_to :dashboard
+  end
+
+  def search
+  end
+
+  def scraping
+    artist = params[:artist][:name]
+    redirect_to "/result/#{artist}"
+  end
+
+  def result
+    artist = params[:name]
+    @url = "https://www.allmusic.com/artist/#{artist}"
   end
 
   private
