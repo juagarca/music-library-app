@@ -1,1 +1,29 @@
-<%= @url %>
+<!-- Artist -->
+
+Artist name = <%= @info[:name] %>
+<br>
+
+description = <%= @info[:description] %>
+<br>
+
+instagram = <%= link_to @instagram, @instagram %>
+<br>
+
+<img src=<%= @info[:photo] %>>
+<br>
+
+<%= @bio %>
+<br>
+
+------------------------------------------------
+<br>
+
+<!-- Performer -->
+full name = <%= @info[:full_name] %>
+<br>
+
+date of birth = <%= @info[:date_of_birth] %>
+<br>
+
+birth location = <%= @info[:birth_location] %>
+<br>
