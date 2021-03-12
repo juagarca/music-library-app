@@ -18,10 +18,10 @@ class PagesController < ApplicationController
     redirect_to :dashboard
   end
 
-  def search
+  def search_singer
   end
 
-  def scraping
+  def scraping_singer
     artist = params[:artist][:url]
     instagram = params[:artist][:instagram]
     bio = params[:artist][:bio]
@@ -29,13 +29,17 @@ class PagesController < ApplicationController
     redirect_to "/result/#{artist}?instagram=#{instagram}&bio=#{bio}"
   end
 
-  def result
-    artist = params[:name]
+  def result_singer
+    artist_url = params[:name]
     @instagram = "https://www.instagram.com/#{params[:instagram]}"
-    @url = "https://www.allmusic.com/artist/#{artist}"
+    @url = "https://www.allmusic.com/artist/#{artist_url}"
 
     @info = retrieve_info_from_web(@url)
     @bio = params[:bio]
+
+    artist = Artist.create(name: @info[:name], instagram: @instagram, bio: @bio, description: @info[:description])
+    performer = Performer.create(full_name: @info[:full_name], date_of_birth: @info[:date_of_birth], birth_location: @info[:birth_location])
+    PerformerArtist.create(artist: artist, performer: performer)
   end
 
   private

@@ -3,12 +3,5 @@
   <%= f.input :url, label: 'https://www.allmusic.com/artist/' %>
   <%= f.input :instagram %>
   <%= f.input :bio, as: :text, input_html: {style: 'width: 1000px; height: 300px;'} %>
-  <%= f.submit 'search' %>
-<% end %>
-
-<br>
-<h2>Band</h2>
-<%= simple_form_for :artist do  |f| %>
-  <%= f.input :name, label: 'https://www.allmusic.com/artist/' %>
-  <%= f.submit 'search' %>
+  <%= f.submit 'create' %>
 <% end %>

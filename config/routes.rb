@@ -4,9 +4,9 @@ Rails.application.routes.draw do
   root to: 'pages#home'
   get '/dashboard', to: 'pages#dashboard'
   get '/dashboard/album/:id', to: 'pages#tick', as: "tick"
-  get '/search', to: 'pages#search'
-  post '/search', to: 'pages#scraping'
-  get '/result/:name', to: 'pages#result'
+  get '/create_singer', to: 'pages#create_singer'
+  post '/create_singer', to: 'pages#scraping_singer'
+  get '/result/:name', to: 'pages#result_singer'
 
   resources :artists, only: %i[index show] do
     get '/add', to: 'artists#add'
