@@ -86,6 +86,7 @@ class PagesController < ApplicationController
 
       doc = Nokogiri::HTML(open(url).read)
 
+      #Retrieving album title and date
       title = doc.search('.album-title').text.strip
       date = doc.search('.release-date span').text.strip
       if date.length == 4
@@ -96,7 +97,25 @@ class PagesController < ApplicationController
       category = 'album'
 
       album = Album.create(artist: artist, release_date: release_date, title: title, category: category)
+
+      create_album_songs(album, doc)
+
       # p '---------------------'
+    end
+  end
+
+  def create_album_songs(album, doc)
+    doc.search('tbody tr').each do |row|
+      track_number = row.search('.tracknum').text.strip.to_i
+
+      title = row.search('.title a').text.strip
+      length = row.search('.time').text.strip
+      minutes = length.split(':').first.to_i
+      seconds = length.split(':').last.to_i
+      length_seconds = minutes * 60 + seconds
+
+      song = Song.create(title: title, length: length_seconds)
+      AlbumSong.create(song: song, album: album, track_number: track_number)
     end
   end
 end

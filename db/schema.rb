@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_15_170805) do
+ActiveRecord::Schema.define(version: 2021_03_15_174832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 2021_03_15_170805) do
   end
 
   create_table "songs", force: :cascade do |t|
-    t.boolean "single"
+    t.boolean "single", default: false
     t.string "video_url"
     t.integer "length"
     t.string "description"
