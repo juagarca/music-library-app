@@ -40,6 +40,8 @@ class PagesController < ApplicationController
     artist = Artist.create(name: @info[:name], instagram: @instagram, bio: @bio, description: @info[:description])
     performer = Performer.create(full_name: @info[:full_name], date_of_birth: @info[:date_of_birth], birth_location: @info[:birth_location])
     PerformerArtist.create(artist: artist, performer: performer)
+
+    @albums = retrieve_albums_from_web("#{@url}/discography", artist)
   end
 
   private
@@ -72,5 +74,29 @@ class PagesController < ApplicationController
     result[:birth_location] = html_doc.search('.birth a')[1].text.strip
 
     result
+  end
+
+  def retrieve_albums_from_web(url, artist)
+    html_file = open(url).read
+    html_doc = Nokogiri::HTML(html_file)
+
+    html_doc.search('tbody tr').each do |row|
+      album_url = row.search('.cover a').attribute('href').value
+      url = "https://www.allmusic.com/#{album_url}"
+
+      doc = Nokogiri::HTML(open(url).read)
+
+      title = doc.search('.album-title').text.strip
+      date = doc.search('.release-date span').text.strip
+      if date.length == 4
+        release_date = Date.parse("#{date}/01/01")
+      else
+        release_date = Date.parse(date)
+      end
+      category = 'album'
+
+      album = Album.create(artist: artist, release_date: release_date, title: title, category: category)
+      # p '---------------------'
+    end
   end
 end
