@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :userArtists
   has_many :userAlbums
   has_many :artists, through: :userArtists
+  has_one_attached :avatar
 
   # validates :username, presence: true
 

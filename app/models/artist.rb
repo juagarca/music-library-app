@@ -5,6 +5,7 @@ class Artist < ApplicationRecord
   has_many :songs, through: :collaborations, as: :collaborations, dependent: :destroy
   has_many :performer_artists
   has_many :performers, through: :performer_artists
+  has_many_attached :photos
 
   validates :name, presence: true
 end
