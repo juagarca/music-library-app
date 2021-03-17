@@ -4,8 +4,20 @@
   <% @songs.each do |song| %>
     <li>
       <%= song.albumSongs.where(album: @album).first.track_number %> -
-      <%= link_to song.title, artist_album_song_path(@artist, @album, song) %> -
-      <%= song.length %> seconds
+      <%= link_to song.title, artist_album_song_path(@artist, @album, song) %>
+      <% unless song.collaborations == [] %>
+        (Feat.
+        <% song.collaborations.each_with_index do |collaboration, i| %>
+          <% if i == song.collaborations.length - 1 %>
+            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>)
+          <% elsif i == song.collaborations.length - 2 %>
+            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>&)
+          <% else %>
+            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>,)
+          <% end %>
+        <% end %>
+      <% end %>
+      - <%= song.length %> seconds
     </li>
   <% end %>
 </ul>
