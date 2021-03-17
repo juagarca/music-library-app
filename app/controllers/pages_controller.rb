@@ -35,17 +35,41 @@ class PagesController < ApplicationController
     url = "https://www.allmusic.com/artist/#{artist_url}"
     bio = params[:bio]
 
-    @artist = create_artist(url, bio, instagram)
+    html_file = open(url).read
+    html_doc = Nokogiri::HTML(html_file)
+
+    @artist = a_group?(html_doc) ? create_group_artist(url, bio, instagram) : create_solo_artist(url, bio, instagram)
   end
 
   private
 
-  def create_artist(url, bio, instagram)
-    @info = retrieve_info_from_web(url)
+  def a_group?(html_doc)
+    type = html_doc.search('.birth h4').children.text.strip == 'Formed' ? 'group' : 'solo'
+    type == 'group'
+  end
 
-    artist = Artist.create(name: @info[:name], instagram: instagram, bio: bio, description: @info[:description])
-    performer = Performer.create(full_name: @info[:full_name], date_of_birth: @info[:date_of_birth], birth_location: @info[:birth_location])
+  def create_solo_artist(url, bio, instagram)
+    html_file = open(url).read
+    doc = Nokogiri::HTML(html_file)
+    info = retrieve_info_solo(doc)
+
+    artist = Artist.create(name: info[:name], instagram: instagram, bio: bio, description: info[:description])
+
+    performer = Performer.where(full_name: info[:full_name], date_of_birth: info[:date_of_birth]).first
+
+    if !performer
+      performer = Performer.create(full_name: info[:full_name], date_of_birth: info[:date_of_birth], birth_location: info[:birth_location])
+    end
     PerformerArtist.create(artist: artist, performer: performer)
+
+    retrieve_albums_from_web("#{url}/discography", artist)
+    artist
+  end
+
+  def create_group_artist(url, bio, instagram)
+    html_file = open(url).read
+    doc = Nokogiri::HTML(html_file)
+    artist = retrieve_info_group(doc, bio, instagram)
 
     retrieve_albums_from_web("#{url}/discography", artist)
     artist
@@ -58,10 +82,7 @@ class PagesController < ApplicationController
     end
   end
 
-  # Using AllMusic website
-  def retrieve_info_from_web(url)
-    html_file = open(url).read
-    html_doc = Nokogiri::HTML(html_file)
+  def retrieve_info_solo(html_doc)
     result = {}
 
     # Artist
@@ -70,16 +91,40 @@ class PagesController < ApplicationController
     result[:photo] = html_doc.search('.artist-contain img').attribute('src').value unless html_doc.search('.artist-contain img').first.nil?
 
     # Performer
-    unless html_doc.search('.aliases div').first.nil?
-      result[:full_name] = html_doc.search('.aliases div').first.children[1].text.strip
-    else
-      result[:full_name] = result[:name]
-    end
+    result[:full_name] = result[:name]
 
     result[:date_of_birth] = parse_date(html_doc.search('.birth a').first.text.strip) unless html_doc.search('.birth a').first.nil?
     result[:birth_location] = html_doc.search('.birth a')[1].text.strip unless html_doc.search('.birth a')[1].nil?
 
     result
+  end
+
+  def retrieve_info_group(html_doc, bio, instagram)
+    result = {}
+
+    # Artist
+    result[:name] = html_doc.search('.artist-name').text.strip
+    result[:description] = html_doc.search('.biography span').first.text.strip unless html_doc.search('.biography span').first.nil?
+    result[:photo] = html_doc.search('.artist-contain img').attribute('src').value unless html_doc.search('.artist-contain img').first.nil?
+    artist = Artist.create(name: result[:name], instagram: instagram, bio: bio, description: result[:description])
+
+    # Performers
+    html_doc.search('.group-members a').each do |member|
+      member_url = member.attributes['href'].value
+      url = "https://www.allmusic.com/#{member_url}"
+
+      doc = Nokogiri::HTML(open(url).read)
+
+      # Retrieving info from member to create performer
+      full_name = doc.search('.artist-name').text.strip
+      date_of_birth = parse_date(doc.search('.birth a').first.text.strip) unless doc.search('.birth a').first.nil?
+      birth_location = doc.search('.birth a')[1].text.strip unless doc.search('.birth a')[1].nil?
+
+      performer = Performer.create(full_name: full_name, date_of_birth: date_of_birth, birth_location: birth_location)
+      PerformerArtist.create(artist: artist, performer: performer)
+    end
+
+    artist
   end
 
   def retrieve_albums_from_web(url, artist)
@@ -98,11 +143,9 @@ class PagesController < ApplicationController
       unless doc.search('.release-date span').text.strip == ''
         date = doc.search('.release-date span').text.strip
         date = parse_date(date)
-
         category = 'album'
 
-        album = Album.create!(artist: artist, release_date: date, title: title, category: category)
-
+        album = Album.create(artist: artist, release_date: date, title: title, category: category)
         create_album_songs(album, doc)
       end
     end
@@ -134,7 +177,14 @@ class PagesController < ApplicationController
 
         unless artist
           url = performer.attributes['href'].value
-          artist = create_artist(url, '', '')
+          html_file = open(url).read
+          html_doc = Nokogiri::HTML(html_file)
+
+          if a_group?(html_doc)
+            artist = create_group_artist(url, '', '')
+          else
+            artist = create_solo_artist(url, '', '')
+          end
         end
       end
 
