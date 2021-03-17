@@ -1,29 +1,32 @@
 <!-- Artist -->
 
-Artist name = <%= @info[:name] %>
+Artist name = <%= @artist.name %>
 <br>
 
-description = <%= @info[:description] %>
+description = <%= @artist.description %>
 <br>
 
-instagram = <%= link_to @instagram, @instagram %>
+instagram = <%= link_to @artist.instagram, @artist.instagram %>
 <br>
 
 <img src=<%= @info[:photo] %>>
 <br>
 
-<%= @bio %>
+<%= @artist.bio %>
 <br>
 
 ------------------------------------------------
 <br>
 
 <!-- Performer -->
-full name = <%= @info[:full_name] %>
-<br>
 
-date of birth = <%= @info[:date_of_birth] %>
-<br>
+<% @artist.performers.each do |performer| %>
+  <%= performer.full_name %>
+  <br>
 
-birth location = <%= @info[:birth_location] %>
-<br>
+  <%= performer.date_of_birth %>
+  <br>
+
+  <%= performer.birth_location %>
+  <br>
+<% end %>
