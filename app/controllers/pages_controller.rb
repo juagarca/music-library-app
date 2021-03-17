@@ -55,6 +55,12 @@ class PagesController < ApplicationController
 
     artist = Artist.create(name: info[:name], instagram: instagram, bio: bio, description: info[:description])
 
+    unless doc.search('.artist-contain img').first.nil?
+      artist_photo = doc.search('.artist-contain img').first.attributes['src'].value
+      file = URI.open(artist_photo)
+      artist.photos.attach(io: file, filename: artist.name, content_type: 'image/png')
+    end
+
     performer = Performer.where(full_name: info[:full_name], date_of_birth: info[:date_of_birth]).first
 
     if !performer
@@ -70,6 +76,10 @@ class PagesController < ApplicationController
     html_file = open(url).read
     doc = Nokogiri::HTML(html_file)
     artist = retrieve_info_group(doc, bio, instagram)
+
+    artist_photo = doc.search('.artist-contain img').first.attributes['src'].value unless doc.search('.artist-contain img').first.nil?
+    file = URI.open(artist_photo)
+    artist.photos.attach(io: file, filename: artist.name, content_type: 'image/png')
 
     retrieve_albums_from_web("#{url}/discography", artist)
     artist
@@ -134,18 +144,20 @@ class PagesController < ApplicationController
     html_doc.search('tbody tr').each do |row|
       album_url = row.search('.cover a').attribute('href').value
       url = "https://www.allmusic.com/#{album_url}"
-
       doc = Nokogiri::HTML(open(url).read)
 
-      # Retrieving album title and date
-      title = doc.search('.album-title').text.strip unless html_doc.search('.album-title').nil?
-
+      # Retrieving album title, date and cover if it has a release date
       unless doc.search('.release-date span').text.strip == ''
+        title = doc.search('.album-title').text.strip unless html_doc.search('.album-title').nil?
+        cover_url = doc.search('.album-contain img').first.attributes['src'].value
+        file = URI.open(cover_url)
+
         date = doc.search('.release-date span').text.strip
         date = parse_date(date)
         category = 'album'
 
         album = Album.create(artist: artist, release_date: date, title: title, category: category)
+        album.cover.attach(io: file, filename: "#{artist}_#{title}", content_type: 'image/png')
         create_album_songs(album, doc)
       end
     end

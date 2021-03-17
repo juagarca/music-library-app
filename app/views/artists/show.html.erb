@@ -1,6 +1,10 @@
 <h2><%= @artist.name %></h2>
 <small><%= @artist.bio %></small>
 <br>
+<% if @artist.photos.attached? %>
+  <%= cl_image_tag @artist.photos.first.key, height: 300, width: 300, crop: :fill %>
+<% end %>
+<br>
 <%= link_to "Instagram", @artist.instagram %>
 
 <h3>------ Albums ------</h2>
