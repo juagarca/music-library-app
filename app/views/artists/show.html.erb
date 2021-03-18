@@ -7,16 +7,27 @@
 <br>
 <%= link_to "Instagram", @artist.instagram %>
 
-<h3>------ Albums ------</h2>
-
+<h2>Albums</h2>
 <ul>
-  <% @artist.albums.each do |album| %>
+  <% @albums.each do |album| %>
     <li>
       <%= link_to album.title, artist_album_path(@artist, album) %>
       - <%= album.release_date %>
     </li>
   <% end %>
 </ul>
+
+<h2>Other releases</h2>
+
+<ul>
+  <% @other_releases.each do |album| %>
+    <li>
+      <%= link_to album.title, artist_album_path(@artist, album) %>
+      - <%= album.release_date %>
+    </li>
+  <% end %>
+</ul>
+
 
 <h2>Performers</h2>
 <ul>

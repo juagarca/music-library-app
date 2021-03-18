@@ -68,7 +68,8 @@ class PagesController < ApplicationController
     end
     PerformerArtist.create(artist: artist, performer: performer)
 
-    retrieve_albums_from_web("#{url}/discography", artist)
+    retrieve_albums_from_web("#{url}/discography", artist, 'album')
+    retrieve_albums_from_web("#{url}/discography/singles", artist, 'other')
     artist
   end
 
@@ -77,11 +78,14 @@ class PagesController < ApplicationController
     doc = Nokogiri::HTML(html_file)
     artist = retrieve_info_group(doc, bio, instagram)
 
-    artist_photo = doc.search('.artist-contain img').first.attributes['src'].value unless doc.search('.artist-contain img').first.nil?
-    file = URI.open(artist_photo)
-    artist.photos.attach(io: file, filename: artist.name, content_type: 'image/png')
+    unless doc.search('.artist-contain img').first.nil?
+      artist_photo = doc.search('.artist-contain img').first.attributes['src'].value
+      file = URI.open(artist_photo)
+      artist.photos.attach(io: file, filename: artist.name, content_type: 'image/png')
+    end
 
-    retrieve_albums_from_web("#{url}/discography", artist)
+    retrieve_albums_from_web("#{url}/discography", artist, 'album')
+    retrieve_albums_from_web("#{url}/discography/singles", artist, 'other')
     artist
   end
 
@@ -137,7 +141,7 @@ class PagesController < ApplicationController
     artist
   end
 
-  def retrieve_albums_from_web(url, artist)
+  def retrieve_albums_from_web(url, artist, category)
     html_file = open(url).read
     html_doc = Nokogiri::HTML(html_file)
 
@@ -154,7 +158,7 @@ class PagesController < ApplicationController
 
         date = doc.search('.release-date span').text.strip
         date = parse_date(date)
-        category = 'album'
+        category = category
 
         album = Album.create(artist: artist, release_date: date, title: title, category: category)
         album.cover.attach(io: file, filename: "#{artist}_#{title}", content_type: 'image/png')
@@ -162,6 +166,9 @@ class PagesController < ApplicationController
       end
     end
   end
+
+  # def retrieve_singles_from_web(url, artist)
+  # end
 
   def parse_date(string)
     date = nil

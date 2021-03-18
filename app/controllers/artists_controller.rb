@@ -7,6 +7,8 @@ class ArtistsController < ApplicationController
 
   def show
     @artist = Artist.find(params[:id])
+    @albums = @artist.albums.where(category: 'album')
+    @other_releases = @artist.albums.where(category: 'other')
   end
 
   def add
