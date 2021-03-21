@@ -8,9 +8,9 @@ Rails.application.routes.draw do
   post '/create_artist', to: 'pages#scraping_artist'
   get '/result/:name', to: 'pages#result_artist'
 
-  resources :artists, only: %i[index show] do
+  resources :artists, only: %i[index show edit update] do
     get '/add', to: 'artists#add'
-    resources :albums, only: %i[show] do
+    resources :albums, only: %i[show edit update] do
       resources :songs, only: %i[show]
     end
   end

@@ -1,0 +1,7 @@
+<%= simple_form_for @artist do |f| %>
+  <%= f.input :name %>
+  <%= f.input :instagram %>
+  <%= f.input :bio, as: :text, input_html: {style: 'width: 1000px; height: 300px;'} %>
+  <%= f.input :photos, as: :file, input_html: { multiple: true } %>
+  <%= f.submit 'edit' %>
+<% end %>

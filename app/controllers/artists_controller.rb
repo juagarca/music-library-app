@@ -1,14 +1,22 @@
 class ArtistsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
+  before_action :set_artist, only: %i[show edit update]
 
   def index
     @artists = Artist.all
   end
 
   def show
-    @artist = Artist.find(params[:id])
     @albums = @artist.albums.where(category: 'album')
     @other_releases = @artist.albums.where(category: 'other')
+  end
+
+  def edit
+  end
+
+  def update
+    @artist.update(artist_params)
+    redirect_to artist_path(@artist)
   end
 
   def add
@@ -36,5 +44,13 @@ class ArtistsController < ApplicationController
     artist.albums.each do |album|
       UserAlbum.create(user: current_user, album: album)
     end
+  end
+
+  def set_artist
+    @artist = Artist.find(params[:id])
+  end
+
+  def artist_params
+    params.require(:artist).permit(:name, :instagram, :bio, :photos)
   end
 end
