@@ -5,5 +5,9 @@ class AlbumsController < ApplicationController
     @album = Album.find(params[:id])
     @artist = @album.artist
     @songs = @album.songs
+    @artists = Artist.all
+    @collaboration = Collaboration.new
   end
+
+
 end

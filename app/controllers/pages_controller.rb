@@ -53,23 +53,30 @@ class PagesController < ApplicationController
     doc = Nokogiri::HTML(html_file)
     info = retrieve_info_solo(doc)
 
-    artist = Artist.create(name: info[:name], instagram: instagram, bio: bio, description: info[:description])
-
-    unless doc.search('.artist-contain img').first.nil?
-      artist_photo = doc.search('.artist-contain img').first.attributes['src'].value
-      file = URI.open(artist_photo)
-      artist.photos.attach(io: file, filename: artist.name, content_type: 'image/png')
+    if Artist.where(name: info[:name]).count != 0
+      artist = Artist.where(name: info[:name]).first.performers.where(full_name: info[:full_name]).first.artists.where(name: info[:name]).first
     end
 
-    performer = Performer.where(full_name: info[:full_name], date_of_birth: info[:date_of_birth]).first
+    unless artist
+      artist = Artist.create(name: info[:name], instagram: instagram, bio: bio, description: info[:description])
 
-    if !performer
-      performer = Performer.create(full_name: info[:full_name], date_of_birth: info[:date_of_birth], birth_location: info[:birth_location])
+      unless doc.search('.artist-contain img').first.nil?
+        artist_photo = doc.search('.artist-contain img').first.attributes['src'].value
+        file = URI.open(artist_photo)
+        artist.photos.attach(io: file, filename: artist.name, content_type: 'image/png')
+      end
+
+      performer = Performer.where(full_name: info[:full_name], date_of_birth: info[:date_of_birth]).first
+
+      if !performer
+        performer = Performer.create(full_name: info[:full_name], date_of_birth: info[:date_of_birth], birth_location: info[:birth_location])
+      end
+      PerformerArtist.create(artist: artist, performer: performer)
+
+      retrieve_albums_from_web("#{url}/discography", artist, 'album')
+      retrieve_albums_from_web("#{url}/discography/singles", artist, 'other')
     end
-    PerformerArtist.create(artist: artist, performer: performer)
 
-    retrieve_albums_from_web("#{url}/discography", artist, 'album')
-    retrieve_albums_from_web("#{url}/discography/singles", artist, 'other')
     artist
   end
 
@@ -107,8 +114,15 @@ class PagesController < ApplicationController
     # Performer
     result[:full_name] = result[:name]
 
-    result[:date_of_birth] = parse_date(html_doc.search('.birth a').first.text.strip) unless html_doc.search('.birth a').first.nil?
-    result[:birth_location] = html_doc.search('.birth a')[1].text.strip unless html_doc.search('.birth a')[1].nil?
+    unless html_doc.search('.birth a').first.nil?
+      if html_doc.search('.birth a').first.count == 1
+        result[:date_of_birth] = html_doc.search('.birth a').first.text.strip
+        result[:birth_location] = nil
+      else
+        result[:date_of_birth] = parse_date(html_doc.search('.birth a').first.text.strip)
+        result[:birth_location] = html_doc.search('.birth a')[1].text.strip
+      end
+    end
 
     result
   end
@@ -131,8 +145,15 @@ class PagesController < ApplicationController
 
       # Retrieving info from member to create performer
       full_name = doc.search('.artist-name').text.strip
-      date_of_birth = parse_date(doc.search('.birth a').first.text.strip) unless doc.search('.birth a').first.nil?
-      birth_location = doc.search('.birth a')[1].text.strip unless doc.search('.birth a')[1].nil?
+      unless doc.search('.birth a').first.nil?
+        if doc.search('.birth a').first.count == 1
+          date_of_birth = doc.search('.birth a').first.text.strip
+          birth_location = nil
+        else
+          date_of_birth = parse_date(doc.search('.birth a').first.text.strip)
+          birth_location = doc.search('.birth a')[1].text.strip
+        end
+      end
 
       performer = Performer.create(full_name: full_name, date_of_birth: date_of_birth, birth_location: birth_location)
       PerformerArtist.create(artist: artist, performer: performer)
@@ -167,9 +188,6 @@ class PagesController < ApplicationController
     end
   end
 
-  # def retrieve_singles_from_web(url, artist)
-  # end
-
   def parse_date(string)
     date = nil
     if string.length == 4
@@ -190,28 +208,28 @@ class PagesController < ApplicationController
       seconds = length.split(':').last.to_i
       artist = nil
 
-      song.search('.featuring a').each do |performer|
-        name = performer.text.strip
-        artist = Artist.find_by(name: name)
+      # song.search('.featuring a').each do |performer|
+      #   name = performer.text.strip
+      #   artist = Artist.find_by(name: name)
 
-        unless artist
-          url = performer.attributes['href'].value
-          html_file = open(url).read
-          html_doc = Nokogiri::HTML(html_file)
+      #   unless artist
+      #     url = performer.attributes['href'].value
+      #     html_file = open(url).read
+      #     html_doc = Nokogiri::HTML(html_file)
 
-          if a_group?(html_doc)
-            artist = create_group_artist(url, '', '')
-          else
-            artist = create_solo_artist(url, '', '')
-          end
-        end
-      end
+      #     if a_group?(html_doc)
+      #       artist = create_group_artist(url, '', '')
+      #     else
+      #       artist = create_solo_artist(url, '', '')
+      #     end
+      #   en
+      # end
 
       length_seconds = minutes * 60 + seconds
 
       song = Song.create(title: title, length: length_seconds)
       AlbumSong.create(song: song, album: album, track_number: track_number)
-      Collaboration.create(song: song, artist: artist)
+      # Collaboration.create(song: song, artist: artist)
     end
   end
 end

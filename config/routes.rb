@@ -14,4 +14,6 @@ Rails.application.routes.draw do
       resources :songs, only: %i[show]
     end
   end
+
+  resources :collaborations, only: %i[create]
 end

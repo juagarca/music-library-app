@@ -1,8 +1,24 @@
-<h2><%= @album.title %></h2>
-<% if @album.cover.attached? %>
-  <%= cl_image_tag @album.cover.key, height: 300, width: 300, crop: :fill %>
-<% end %>
-<br>
+<div style="display: flex; justify-content: space-between;">
+  <div>
+    <h2><%= @album.title %></h2>
+    <% if @album.cover.attached? %>
+      <%= cl_image_tag @album.cover.key, height: 300, width: 300, crop: :fill %>
+    <% end %>
+  </div>
+  <div>
+    <h3>Add collaboration</h3>
+    <%= simple_form_for @collaboration do |f| %>
+      <%= f.input :song, as: :select, collection: @songs %>
+      <%= f.input :artist, as: :select, collection: @artists %>
+      <%= f.hidden_field :album, value: @album.id %>
+      <%= f.hidden_field :singer, value: @artist.id %>
+      <%= f.submit 'add' %>
+    <% end %>
+  </div>
+</div>
+
+
+
 <ul>
   <% @songs.each do |song| %>
     <li>
@@ -14,9 +30,9 @@
           <% if i == song.collaborations.length - 1 %>
             <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>)
           <% elsif i == song.collaborations.length - 2 %>
-            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>&)
+            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %> &
           <% else %>
-            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>,)
+            <%= link_to collaboration.artist.name, artist_path(collaboration.artist) %>,
           <% end %>
         <% end %>
       <% end %>
@@ -24,3 +40,5 @@
     </li>
   <% end %>
 </ul>
+
+
