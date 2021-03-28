@@ -115,7 +115,8 @@ class PagesController < ApplicationController
     result[:full_name] = result[:name]
 
     unless html_doc.search('.birth a').first.nil?
-      if html_doc.search('.birth a').first.count == 1
+      if html_doc.search('.birth a').count == 1
+        raise
         result[:date_of_birth] = html_doc.search('.birth a').first.text.strip
         result[:birth_location] = nil
       else
@@ -146,7 +147,7 @@ class PagesController < ApplicationController
       # Retrieving info from member to create performer
       full_name = doc.search('.artist-name').text.strip
       unless doc.search('.birth a').first.nil?
-        if doc.search('.birth a').first.count == 1
+        if doc.search('.birth a').count == 1
           date_of_birth = doc.search('.birth a').first.text.strip
           birth_location = nil
         else
