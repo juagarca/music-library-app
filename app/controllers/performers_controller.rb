@@ -6,6 +6,7 @@ class PerformersController < ApplicationController
   end
 
   def show
+    @artists = @performer.artists
   end
 
   def edit

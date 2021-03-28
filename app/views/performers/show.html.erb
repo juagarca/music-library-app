@@ -4,4 +4,15 @@
 <br>
 <%= @performer.birth_location %>
 
+<br>
+
 <%= link_to 'edit', edit_performer_path(@performer) %>
+<br>
+
+-------------------------
+
+<br>
+<% @artists.each do |artist| %>
+  <%= link_to artist.name, artist_path(artist) %>
+  <br>
+<% end %>
