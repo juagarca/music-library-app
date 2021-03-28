@@ -3,7 +3,9 @@
 <small><%= @artist.bio %></small>
 <br>
 <% if @artist.photos.attached? %>
-  <%= cl_image_tag @artist.photos[0].key, height: 300, width: 300, crop: :fill %>
+  <% @artist.photos.each do |photo| %>
+    <%= cl_image_tag photo.key, height: 300, width: 400, crop: :fill %>
+  <% end %>
 <% end %>
 <br>
 <%= link_to "Instagram", @artist.instagram %>

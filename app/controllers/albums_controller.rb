@@ -8,6 +8,4 @@ class AlbumsController < ApplicationController
     @artists = Artist.all
     @collaboration = Collaboration.new
   end
-
-
 end
