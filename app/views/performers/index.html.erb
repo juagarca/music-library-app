@@ -1,0 +1,4 @@
+<% @performers.each do |p| %>
+  <%= link_to p.full_name, performer_path(p) %>
+  <br>
+<% end %>

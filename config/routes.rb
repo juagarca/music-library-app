@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root to: 'pages#home'
+
+  devise_for :users
+
   get '/dashboard', to: 'pages#dashboard'
   get '/dashboard/album/:id', to: 'pages#tick', as: "tick"
   get '/create_artist', to: 'pages#create_artist'
@@ -11,9 +12,11 @@ Rails.application.routes.draw do
   resources :artists, only: %i[index show edit update] do
     get '/add', to: 'artists#add'
     resources :albums, only: %i[show edit update] do
-      resources :songs, only: %i[show]
+      resources :songs, only: %i[index show]
     end
   end
+
+  resources :performers, only: %i[index show edit update]
 
   resources :collaborations, only: %i[create]
 end
