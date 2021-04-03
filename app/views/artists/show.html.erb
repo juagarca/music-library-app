@@ -31,13 +31,20 @@
   <% end %>
 </ul>
 
-
-<h2>Performers</h2>
-<ul>
-  <% @artist.performers.each do |performer| %>
-    <li>
-      <%= performer.full_name %> | <%= performer.date_of_birth %> | <%= performer.birth_location %>
-    </li>
-  <% end %>
-</ul>
-
+<% if @artist.performers.count > 1 %>
+  <h2>Performers</h2>
+  <ul>
+    <% @artist.performers.each do |performer| %>
+      <li>
+        <% if performer.artists.count == 1 %>
+          <%= performer.full_name %> | <%= performer.date_of_birth %> | <%= performer.birth_location %>
+        <% elsif performer.artists.count == 2 %>
+          <% solo_artist = performer.artists.select { |a| a != @artist }%>
+          <%= link_to performer.full_name, artist_path(solo_artist) %> | <%= performer.date_of_birth %> | <%= performer.birth_location %>
+        <% else %>
+          <%= link_to 'still need to figure out' %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
