@@ -8,7 +8,7 @@ class ArtistsController < ApplicationController
 
   def show
     @albums = @artist.albums.where(category: 'album')
-    @other_releases = @artist.albums.where(category: 'other')
+    @other_releases = @artist.albums.where.not(category: 'album')
   end
 
   def edit

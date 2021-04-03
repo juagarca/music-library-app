@@ -77,6 +77,13 @@ class PagesController < ApplicationController
       retrieve_albums_from_web("#{url}/discography/singles", artist, 'other')
     end
 
+    eps_and_singles = artist.albums.where(category: 'other')
+
+    eps_and_singles.each do |record|
+      record.category = record.songs.count > 1 ? 'ep' : 'single'
+      record.save
+    end
+
     artist
   end
 
@@ -93,6 +100,14 @@ class PagesController < ApplicationController
 
     retrieve_albums_from_web("#{url}/discography", artist, 'album')
     retrieve_albums_from_web("#{url}/discography/singles", artist, 'other')
+
+    eps_and_singles = artist.albums.where(category: 'other')
+
+    eps_and_singles.each do |record|
+      record.category = record.songs.count > 1 ? 'ep' : 'single'
+      record.save
+    end
+
     artist
   end
 
@@ -116,7 +131,6 @@ class PagesController < ApplicationController
 
     unless html_doc.search('.birth a').first.nil?
       if html_doc.search('.birth a').count == 1
-        raise
         result[:date_of_birth] = html_doc.search('.birth a').first.text.strip
         result[:birth_location] = nil
       else
@@ -207,7 +221,7 @@ class PagesController < ApplicationController
       length = song.search('.time').text.strip
       minutes = length.split(':').first.to_i
       seconds = length.split(':').last.to_i
-      artist = nil
+      # artist = nil
 
       # song.search('.featuring a').each do |performer|
       #   name = performer.text.strip

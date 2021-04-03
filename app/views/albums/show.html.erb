@@ -1,6 +1,8 @@
 <div style="display: flex; justify-content: space-between;">
   <div>
     <h2><%= @album.title %></h2>
+    <%= @album.category %>
+    <br>
     <% if @album.cover.attached? %>
       <%= cl_image_tag @album.cover.key, height: 300, width: 300, crop: :fill %>
     <% end %>

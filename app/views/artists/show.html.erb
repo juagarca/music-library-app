@@ -26,7 +26,7 @@
   <% @other_releases.each do |album| %>
     <li>
       <%= link_to album.title, artist_album_path(@artist, album) %>
-      - <%= album.release_date %>
+      | <%= album.category %> | <%= album.release_date %>
     </li>
   <% end %>
 </ul>
