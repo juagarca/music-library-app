@@ -1,0 +1,8 @@
+<%= simple_form_for [@artist, @album, @song] do |f| %>
+  <%= f.input :title %>
+  <%= f.input :description %>
+  <%= f.input :length %>
+  <%= f.input :single %>
+  <%= f.input :video_url %>
+  <%= f.submit 'edit' %>
+<% end %>

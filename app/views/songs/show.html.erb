@@ -1,3 +1,11 @@
-<h2>
-  <%= @song.title %>
-</h2>
+Title: <%= @song.title %>
+<br>
+Description: <%= @song.description %>
+<br>
+Length: <%= @song.length %>
+<br>
+Single?: <%= @song.single %>
+<br>
+Video: <%= @song.video_url %>
+<br>
+<%= link_to 'Edit' , edit_artist_album_song_path(@artist_id, @album_id, @song) %>
