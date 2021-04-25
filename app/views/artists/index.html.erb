@@ -1,20 +1,14 @@
 <div class="artist-cards">
   <% @artists.each do |artist| %>
     <%= link_to artist_path(artist) do %>
-      <% if artist.photos.attached? %>
-        <% random = rand(artist.photos.count) %>
-        <div class="artist-card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('<%= cl_image_path artist.photos[random].key %>');">
-          <%= artist.name %>
-        </div>
-      <% else %>
-        <div class="artist-card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('');">
-          <%= artist.name %>
-        </div>
-      <% end %>
+      <% 
+        random = rand(artist.photos.count)
+        photoUrl = "#{CL_PHOTO_BASE_URL}/#{artist.photos[random].key}"
+      %>
+      <%= react_component("ArtistCard", { name: artist.name, photoUrl: photoUrl }) %>
     <% end %>
   <% end %>
 </div>
-
 
 <%# if user_signed_in? %>
   <%#= link_to "Remove", artist_add_path(artist), class: "btn btn-danger" %>

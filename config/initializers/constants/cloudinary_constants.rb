@@ -1,0 +1,1 @@
+CL_PHOTO_BASE_URL = 'https://res.cloudinary.com/dfe3d8qmn/image/upload'
